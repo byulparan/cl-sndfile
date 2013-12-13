@@ -134,7 +134,7 @@
 		(:input :sfm_read)
 		(:output :sfm_write))))
     (alexandria:with-gensyms (sf-info full-path)
-      `(let ((,full-path (su:get-fullpath ,path)))
+      `(let ((,full-path (su:full-pathname ,path)))
 	 (cffi:with-foreign-objects ((,sf-info '(:struct sf_info)))
 	   (cffi:foreign-funcall "memset"
 				 :pointer ,sf-info
