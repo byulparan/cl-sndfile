@@ -4,7 +4,7 @@ just wrapper libsndfile for CommonLisp
 #### require:
   - [libsndfile](http://www.mega-nerd.com/libsndfile/)
   - [Quicklisp](http://www.quicklisp.org)
-  - [Simple-Utility](https://github.com/byulparan/Simple-Utility)
+  - [Simple-Utils](https://github.com/byulparan/Simple-Utils)
   - Common Lisp Implementations
 	+ [ClozureCL](http://www.clozure.com/clozurecl.html)
 	+ [SBCL](http://www.sbcl.org)
