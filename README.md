@@ -10,6 +10,8 @@ just wrapper libsndfile for CommonLisp
 	+ [SBCL](http://www.sbcl.org)
 	+ [ECL](http://ecls.sourceforge.net)
 
+#### package: sf
+
 #### usage:
 
 	;;; write audio-file(4secs, 48000hz, stereo, PCM_24)
