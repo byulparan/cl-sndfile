@@ -2,7 +2,7 @@
 (in-package #:sf)
 
 (cffi:define-foreign-library libsndfile
-  (:darwin "libsndfile.dylib")
+  (:darwin "libsndfile.1.dylib")
   (:unix (:or "libsndfile.so"))
   (:windows "libsndfile.dll"))
 
