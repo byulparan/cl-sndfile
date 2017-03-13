@@ -102,9 +102,9 @@
     (cons 'progn
 	  (loop for operate in '("readf" "writef" "read" "write")
 		collect
-		`(cffi:defcfun ,(su:cat "sf_" operate "_" type) sf_count_t
+		`(cffi:defcfun ,(concatenate 'string "sf_" operate "_" type) sf_count_t
 		   (sndfile :pointer)
-		   (,(intern (string-upcase (su:cat type "-array"))) :pointer)
+		   (,(intern (string-upcase (concatenate 'string type "-array"))) :pointer)
 		   (,(if (eql #\f (elt (reverse operate) 0)) 'frames 'items) sf_count_t))))))
 
 (def-sf-rw-function :short)

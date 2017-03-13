@@ -57,7 +57,7 @@
 			    ((:double :doublef) :double)
 			    ((:int :intf) :int)
 			    ((:short :shortf) :short)))
-	  (name (intern (su:cat ,direction "-" (string-upcase fn) "-" (string-upcase cffi-type)))))
+	  (name (intern (concatenate 'string ,direction "-" (string-upcase fn) "-" (string-upcase cffi-type)))))
      ,@body))
 
 (defmacro def-read-data-function (type)
@@ -73,7 +73,7 @@
 			      (frames `(* ,fn ,chanls))
 			      (items fn))))
 	       (cffi:with-foreign-objects ((,data ,cffi-type ,size))
-		 (setf ,fn (,(intern (string-upcase (su:cat "sf-read" (if (eql fn 'frames) "f-" "-") (string cffi-type))))
+		 (setf ,fn (,(intern (string-upcase (concatenate 'string "sf-read" (if (eql fn 'frames) "f-" "-") (string cffi-type))))
 			    (sndfile-ptr sndfile) ,data ,fn))
 		 (sndfile-err-check (sndfile-ptr sndfile))
 		 (let ((,vect (make-array ,size :element-type ',(ecase type
@@ -109,7 +109,7 @@
 	     (cffi:with-foreign-objects ((,data ,cffi-type ,snd-frames))
 	       (loop for i from 0 below ,snd-frames
 		     do (setf (cffi:mem-aref ,data ,cffi-type i) (aref buffer i)))
-	       (,(intern (string-upcase (su:cat "sf-write" (if (eql fn 'frames) "f-" "-") (string cffi-type))))
+	       (,(intern (string-upcase (concatenate 'string "sf-write" (if (eql fn 'frames) "f-" "-") (string cffi-type))))
 		(sndfile-ptr sndfile) ,data ,(if (eql fn 'frames) `(/ ,snd-frames (chanls sndfile)) snd-frames))
 	       (sndfile-err-check (sndfile-ptr sndfile))
 	       (values))))
@@ -126,6 +126,27 @@
 (def-write-data-function :doublef)
 
 
+
+
+(defun full-pathname (path)
+  "returning absoulte full-pathname of path"
+  #+ccl (namestring (ccl:full-pathname path))
+  #-ccl
+  (labels ((absolute-dir (dir)
+	     (if (eql (car dir) :absolute) (if (find :home dir)
+					       (append
+						(pathname-directory (user-homedir-pathname))
+						(cdr (member :home dir)))
+					       dir)
+		 (let* ((default-dir
+			  (pathname-directory (truename ""))))
+		   (when (find :up dir)
+		     (setf dir (cdr dir))
+		     (setf default-dir (butlast default-dir)))
+		   (append default-dir (cdr dir))))))
+    (namestring (make-pathname :directory (absolute-dir (pathname-directory path)) :name (pathname-name path) :type (pathname-type path)))))
+
+
 (defmacro with-open-sndfile ((sndfile path &key (direction :input) 
 					     (chanls 1)
 					     (sr 44100)
@@ -134,7 +155,7 @@
 		(:input :sfm_read)
 		(:output :sfm_write))))
     (alexandria:with-gensyms (sf-info full-path)
-      `(let ((,full-path (su:full-pathname ,path)))
+      `(let ((,full-path (full-pathname ,path)))
 	 (cffi:with-foreign-objects ((,sf-info '(:struct sf_info)))
 	   (cffi:foreign-funcall "memset"
 				 :pointer ,sf-info
