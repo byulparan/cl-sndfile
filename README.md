@@ -1,10 +1,11 @@
 # cl-sndfile
 just wrapper libsndfile for CommonLisp
 
+#### version: 2017.3.14
+
 #### require:
   - [libsndfile](http://www.mega-nerd.com/libsndfile/)
   - [Quicklisp](http://www.quicklisp.org)
-  - [Simple-Utils](https://github.com/byulparan/Simple-Utils)
   - Common Lisp Implementations
 	+ [ClozureCL](http://www.clozure.com/clozurecl.html)
 	+ [SBCL](http://www.sbcl.org)
@@ -21,7 +22,8 @@ just wrapper libsndfile for CommonLisp
 			   :sr 48000)
 	   (sf:write-frames-double
           (loop for i from 0 below (* 48000 4)
-	          append (su:dup (sin (* 2 pi (/ i (/ 48000 440)))) 2))
+	          append (let ((sample (sin (* 2 pi (/ i (/ 48000 440))))))
+			            (list sample sample)))
 		  snd))
 
 
